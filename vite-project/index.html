@@ -2,12 +2,29 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie App</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="main_con">
+      <h2>search movies here</h2>
+
+      <input type="text" id="movie_search" />
+
+      <p>Please select short or full plot:</p>
+
+      <form id="form">
+        <input type="radio" id="full" name="plot_length" value="full" />
+        <label for="full">Full Plot</label><br />
+
+        <input type="radio" id="short" name="plot_length" value="short" />
+        <label for="short">Short Plot</label><br />
+      </form>
+
+      <button type="button" id="button">Click here</button>
+    </div>
+
     <script type="module" src="/main.js"></script>
   </body>
 </html>
