@@ -4,23 +4,27 @@
     <meta charset="UTF-8" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&family=Koulen&display=swap" rel="stylesheet">
     <title>Movie App</title>
   </head>
   <body>
     <div id="main_con">
-      <h2>search movies here</h2>
+      <h2 id="title">search movies here</h2>
 
-      <input type="text" id="movie_search" />
+      <input required minlength="2" type="text" id="movie_search"/>
 
-      <p>Please select short or full plot:</p>
+      <p id="plotinput">Please select short or full plot:</p>
 
       <form id="form">
-        <input type="radio" id="full" name="plot_length" value="full" />
+        <input required minlength="2" type="radio" id="full" name="plot_length" value="full" />
         <label for="full">Full Plot</label><br />
 
-        <input type="radio" id="short" name="plot_length" value="short" />
+        <input required minlength="2" type="radio" id="short" name="plot_length" value="short" />
         <label for="short">Short Plot</label><br />
       </form>
+      <div id="movie"></div>
 
       <button type="button" id="button">Click here</button>
     </div>
