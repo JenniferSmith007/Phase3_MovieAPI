@@ -13,3 +13,8 @@
 - When results display it shows Title, Year, Rating, Release Date and Poster
 - Installed vite plugin to turn the api calls to HTTPS 
 
+### Preview Of Page: 
+
+![Screenshot](vite-project/images/Preview.png)
+
+![Screenshot](vite-project/images/preview2.png)
