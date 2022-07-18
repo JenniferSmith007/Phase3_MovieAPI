@@ -15,6 +15,6 @@
 
 ### Preview Of Page: 
 
-![Screenshot](vite-project/images/Preview.png)
+![Screenshot](vite-project/images/preview1.png)
 
 ![Screenshot](vite-project/images/preview2.png)
