@@ -6,8 +6,12 @@ export const database =  openDB('MovieStore', 2, {
      db.createObjectStore('moviesToStore',    {keyPath:"id",
      
        autoIncrement: true });
+
+       db.createObjectStore('FavmoviesToStore',    {keyPath:"fav",
+     
+       autoIncrement: true });
       
-      // db.createIndex("favMovies", "favmovie", {unique: false})
+      
     },
   });
 

@@ -11,9 +11,13 @@ class Store {
     database.then(async (db) => {
       this.db = db;
       const movie = await db.get("moviesToStore", "movie");
+      const favmovie = await db.get("FavmoviesToStore", "favmovie");
 
       if (movie) {
         for (const [key, value] of Object.entries(movie)) this.set(key, value);
+      }
+      if (favmovie) {
+        for (const [key, value] of Object.entries(favmovie)) this.set(key, value);
       }
     });
     this.state = new Proxy(init, {
@@ -26,6 +30,9 @@ class Store {
        
 
           await self.db.add("moviesToStore", 
+          value[value.length - 1])
+
+          await self.db.add("FavmoviesToStore", 
           value[value.length - 1])
          
           
@@ -58,11 +65,11 @@ class Store {
   getAllMovies() {
     return this.state.movies;
   }
-  addFavMovie(state, value) {
-    let newFavState = state.favMovies.push(value);
+  addFavMovie(state, favValue) {
+    let newFavState = state.favMovies.push(favValue);
 
    
-    console.log(value);
+    console.log(favValue);
     console.log(newFavState);
 
     console.log(this.state.favMovies);
@@ -191,16 +198,105 @@ window.customElements.define("movie-component", Movies);
         raiting.style.textAlign='center'
       }
 
+        
+      let favButton = document.createElement("button")
+      favButton.innerText = 'Favorite <3'
+      mainCon.appendChild(favButton)
+    
+      favButton.addEventListener("click", (e) => {
+        let favMovieContainer = document.createElement("div")
+        favMovieContainer.setAttribute("id", "fav_movie")
+        mainCon.appendChild(favMovieContainer)
+        
+        let favmovieObject = {
+          Title: searchRes[i].Title,
+          Year: searchRes[i].Year,
+          Plot: plotData.Plot,
+          Poster: searchRes[i].Poster,
+          Rating:raitingData, 
+          
+        };
+        let favratings = plotData.Ratings;
+      
+        for (let i = 0; i < favratings.length; i++) {
+          console.log(`${favratings[i].Source} : ${favratings[i].Value}`);
+          let favraiting = document.createElement("p");
+          favraiting.textContent = `RATING: ${favratings[i].Source} : ${favratings[i].Value}`;
+         favMovieContainer.appendChild(favraiting);
+         favraiting.setAttribute("id", "movie_raiting")
+         favraiting.style.color='#646cff'
+         favraiting.style.textAlign='center'
+        }
+
+
+
+
+
+
+
+        let favTitle = document.createTextNode(favmovieObject.Title)
+        let favYear = document.createTextNode(favmovieObject.Year)
+        let favPlot = document.createTextNode(favmovieObject.Plot)
+        let favPoster = document.createElement('img')
+        favPoster.src = favmovieObject.Poster 
+        
+        
+        
+        favMovieContainer.appendChild(favTitle)
+        favMovieContainer.appendChild(favYear)
+        favMovieContainer.appendChild(favPlot)
+        favMovieContainer.appendChild(favPoster)
+        // favMovieContainer.appendChild(favraiting)
+        
+
+        
+        favstore.addFavMovie(favstore.state, favMovieContainer );
+      })
+
 
     
-    
+      let notesButton = document.createElement("button")
+      notesButton.innerText = "Add A Note"
+      mainCon.appendChild(notesButton)
+      
+  
+      notesButton.addEventListener("click", (e) => {
+        let notesDiv = document.createElement("div")
+       let notesInput = document.createElement("textarea")
+        notesInput.setAttribute("rows", "15")
+        notesInput.setAttribute("cols", "35")
+        notesInput.setAttribute("id", "notes")
+        let addNote = document.createElement("button")
+          addNote.innerText = 'Submit'
+        
+        // let notesVal = document.getElementById("notes").value
+        // console.log(notesVal)
+        notesDiv.appendChild(notesInput)
+        notesDiv.appendChild(addNote)
+      
+      
+      
+      
+      
+        mainCon.appendChild(notesDiv)
+      
+  
+        
+  
+  
+  
+      })
 
+
+
+       
 
 
 
 
     console.log("this is movie obj --", movieObject);
     store.addMovie(store.state, movieObject );
+    
   }
 
 
@@ -225,8 +321,7 @@ button.addEventListener("click", function (e) {
   getData(inputVal, plotLen)
   console.log('this is datttttaaaa', {getData})
 
-    
-
+  
 
 });
 
