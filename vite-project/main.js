@@ -11,14 +11,11 @@ class Store {
     database.then(async (db) => {
       this.db = db;
       const movie = await db.get("moviesToStore", "movie");
-      const favmovie = await db.get("FavmoviesToStore", "favmovie");
-
+      
       if (movie) {
         for (const [key, value] of Object.entries(movie)) this.set(key, value);
       }
-      if (favmovie) {
-        for (const [key, value] of Object.entries(favmovie)) this.set(key, value);
-      }
+   
     });
     this.state = new Proxy(init, {
       async set(state, key, value) {
@@ -27,13 +24,12 @@ class Store {
         if (self.db) {
           console.log(self.db);
 
-       
+      
 
           await self.db.add("moviesToStore", 
           value[value.length - 1])
 
-          await self.db.add("FavmoviesToStore", 
-          value[value.length - 1])
+      
          
           
         }
@@ -65,26 +61,13 @@ class Store {
   getAllMovies() {
     return this.state.movies;
   }
-  addFavMovie(state, favValue) {
-    let newFavState = state.favMovies.push(favValue);
-
-   
-    console.log(favValue);
-    console.log(newFavState);
-
-    console.log(this.state.favMovies);
-
-    this.state = Object.assign(this.state, state);
-
-    console.log(this.state);
-  }
-  getAllFavMovies() {
-    return this.state.favMovies;
-  }
+  
+ 
+  
 }
 const store = new Store({ movies: [] });
-const favstore = new Store({ favMovies: [] });
-console.log(favstore);
+
+
 console.log(store.state.movies);
 
 store.subscribe((state) => {
@@ -93,10 +76,7 @@ store.subscribe((state) => {
   console.log('this si movie sta e', movieState)
   movieState.forEach((subMovies) => document.body.appendChild(subMovies));
  
-  let favMovieState = state.favMovies;
-  favMovieState.forEach((subFavMovies) =>
-    document.body.appendChild(subFavMovies)
-  );
+
 
 });
 
@@ -199,34 +179,34 @@ window.customElements.define("movie-component", Movies);
       }
 
         
-      let favButton = document.createElement("button")
-      favButton.innerText = 'Favorite <3'
-      mainCon.appendChild(favButton)
+      // let favButton = document.createElement("button")
+      // favButton.innerText = 'Favorite <3'
+      // mainCon.appendChild(favButton)
     
-      favButton.addEventListener("click", (e) => {
-        let favMovieContainer = document.createElement("div")
-        favMovieContainer.setAttribute("id", "fav_movie")
-        mainCon.appendChild(favMovieContainer)
+      // favButton.addEventListener("click", (e) => {
+      //   let favMovieContainer = document.createElement("div")
+      //   favMovieContainer.setAttribute("id", "fav_movie")
+      //   mainCon.appendChild(favMovieContainer)
         
-        let favmovieObject = {
-          Title: searchRes[i].Title,
-          Year: searchRes[i].Year,
-          Plot: plotData.Plot,
-          Poster: searchRes[i].Poster,
-          Rating:raitingData, 
+      //   let favmovieObject = {
+      //     Title: searchRes[i].Title,
+      //     Year: searchRes[i].Year,
+      //     Plot: plotData.Plot,
+      //     Poster: searchRes[i].Poster,
+      //     Rating:raitingData, 
           
-        };
-        let favratings = plotData.Ratings;
+      //   };
+      //   let favratings = plotData.Ratings;
       
-        for (let i = 0; i < favratings.length; i++) {
-          console.log(`${favratings[i].Source} : ${favratings[i].Value}`);
-          let favraiting = document.createElement("p");
-          favraiting.textContent = `RATING: ${favratings[i].Source} : ${favratings[i].Value}`;
-         favMovieContainer.appendChild(favraiting);
-         favraiting.setAttribute("id", "movie_raiting")
-         favraiting.style.color='#646cff'
-         favraiting.style.textAlign='center'
-        }
+      //   for (let i = 0; i < favratings.length; i++) {
+      //     console.log(`${favratings[i].Source} : ${favratings[i].Value}`);
+      //     let favraiting = document.createElement("p");
+      //     favraiting.textContent = `RATING: ${favratings[i].Source} : ${favratings[i].Value}`;
+      //    favMovieContainer.appendChild(favraiting);
+      //    favraiting.setAttribute("id", "movie_raiting")
+      //    favraiting.style.color='#646cff'
+      //    favraiting.style.textAlign='center'
+      //   }
 
 
 
@@ -234,58 +214,58 @@ window.customElements.define("movie-component", Movies);
 
 
 
-        let favTitle = document.createTextNode(favmovieObject.Title)
-        let favYear = document.createTextNode(favmovieObject.Year)
-        let favPlot = document.createTextNode(favmovieObject.Plot)
-        let favPoster = document.createElement('img')
-        favPoster.src = favmovieObject.Poster 
+      //   let favTitle = document.createTextNode(favmovieObject.Title)
+      //   let favYear = document.createTextNode(favmovieObject.Year)
+      //   let favPlot = document.createTextNode(favmovieObject.Plot)
+      //   let favPoster = document.createElement('img')
+      //   favPoster.src = favmovieObject.Poster 
         
         
         
-        favMovieContainer.appendChild(favTitle)
-        favMovieContainer.appendChild(favYear)
-        favMovieContainer.appendChild(favPlot)
-        favMovieContainer.appendChild(favPoster)
-        // favMovieContainer.appendChild(favraiting)
+      //   favMovieContainer.appendChild(favTitle)
+      //   favMovieContainer.appendChild(favYear)
+      //   favMovieContainer.appendChild(favPlot)
+      //   favMovieContainer.appendChild(favPoster)
+      //   // favMovieContainer.appendChild(favraiting)
         
 
         
-        favstore.addFavMovie(favstore.state, favMovieContainer );
-      })
+      //   favstore.addFavMovie(favstore.state, favMovieContainer );
+      
 
 
     
-      let notesButton = document.createElement("button")
-      notesButton.innerText = "Add A Note"
-      mainCon.appendChild(notesButton)
+      // let notesButton = document.createElement("button")
+      // notesButton.innerText = "Add A Note"
+      // mainCon.appendChild(notesButton)
       
   
-      notesButton.addEventListener("click", (e) => {
-        let notesDiv = document.createElement("div")
-       let notesInput = document.createElement("textarea")
-        notesInput.setAttribute("rows", "15")
-        notesInput.setAttribute("cols", "35")
-        notesInput.setAttribute("id", "notes")
-        let addNote = document.createElement("button")
-          addNote.innerText = 'Submit'
+      // notesButton.addEventListener("click", (e) => {
+      //   let notesDiv = document.createElement("div")
+      //  let notesInput = document.createElement("textarea")
+      //   notesInput.setAttribute("rows", "15")
+      //   notesInput.setAttribute("cols", "35")
+      //   notesInput.setAttribute("id", "notes")
+      //   let addNote = document.createElement("button")
+      //     addNote.innerText = 'Submit'
         
-        // let notesVal = document.getElementById("notes").value
-        // console.log(notesVal)
-        notesDiv.appendChild(notesInput)
-        notesDiv.appendChild(addNote)
+      //   // let notesVal = document.getElementById("notes").value
+      //   // console.log(notesVal)
+      //   notesDiv.appendChild(notesInput)
+      //   notesDiv.appendChild(addNote)
       
       
       
       
       
-        mainCon.appendChild(notesDiv)
+      //   mainCon.appendChild(notesDiv)
       
   
         
   
   
   
-      })
+      // })
 
 
 
