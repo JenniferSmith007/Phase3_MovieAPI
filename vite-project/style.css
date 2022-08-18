@@ -16,8 +16,8 @@ body{
   
 }
 #main_con{
-  display: flex;
-flex-wrap: wrap;
+display: flex;
+flex-wrap: nowrap;
 flex-direction: column;
 }
 
@@ -61,7 +61,8 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #535bf2;
+  color: ghostwhite;
   cursor: pointer;
   transition: border-color 0.25s;
   margin-top: 1em;
@@ -69,18 +70,35 @@ button {
   
 }
 
-button:hover {
-  border-color: #646cff;
+#movie, #favmov{
+  margin-top: 5em;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-column-gap: 28px;
+  grid-row-gap: 19px;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+#mov, #favedmov{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: space-evenly;
+  align-items: center;
+  /* border: #535bf2 dashed .2em; */
+  align-content: baseline;
+  column-gap: 2em;
+ 
 }
-
-@media (prefers-color-scheme: light) {
-
-  button {
-    color: azure;
-    background-color: #535bf2;
-  }
+#plotp {
+  padding: 1em;
+  
+  /* border: green solid 3em ; */
 }
+/* #favmov{
+  margin-top: 6em;
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+grid-template-rows: repeat(2, 1fr);
+grid-column-gap: 5px;
+grid-row-gap: 9px;
+} */
