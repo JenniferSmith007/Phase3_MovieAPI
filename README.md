@@ -4,7 +4,7 @@
 ## Task To Complete:
 
  Using knowledge of forms and APIs, build a website that will look up information about movies and display the information for users.
- !!!!!!!!!!!!!!!!!!!!!!!!!!DO NOT STEAL MY CODE OR FORK MY PROJECT!!!!!!!!!!!!!!
+
 
 ### What Was Done To Complete The Task: 
 
