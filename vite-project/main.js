@@ -12,10 +12,12 @@ class Store {
     database.then(async (db) => {
       this.db = db;
       const favmovie = await db.get("FavmoviesToStore", "favmovie");
+
       
       if (favmovie) {
         for (const [key, value] of Object.entries(favmovie)) this.set(key, value);
       }
+    
     
     });
     this.state = new Proxy(init, {
@@ -26,7 +28,7 @@ class Store {
           console.log(self.db);
 
          
-          await self.db.put('FavmoviesToStore',  value[value.length - 1],  key , console.log('putttts',value[value.length - 1]));
+       
           
           
           
@@ -34,7 +36,7 @@ class Store {
           value[value.length - 1] )
           console.log(value[value.length - 1])
          
-         
+  
 
        
        
@@ -100,8 +102,10 @@ const store = new Store({ movies: [] } );
 const favstore = new Store({ favmovies: [] } );
 
 
+
 console.log(store)
 console.log(favstore)
+
 
 
 
@@ -136,17 +140,18 @@ class Movies extends HTMLElement {
     this.title = "";
     this.year = "";
     this.plot = "";
+    this.note = "";
     // do I pass in poster and id for the constructor? 
   }
   static get observedAttributes() {
-    return ["title", "year", "plot"];
+    return ["title", "year", "plot", "note"];
     // same as above? 
   }
   attributeChangedCallback(attributeName, oldValue, newValue) {
     if (oldValue === newValue) return;
     this[attributeName] = newValue;
   }
-// why do i not need the connected callback for this custom component HTML?
+
 
 }
 
@@ -188,6 +193,23 @@ async function getData(inputVal, plotLen) {
     let year = document.createElement("p");
     let plot = document.createElement("p");
 
+
+
+
+
+
+
+   
+    
+    
+    
+    
+   
+    
+    
+    
+    
+    
     imgTag.src = searchRes[i].Poster;
     imgTag.setAttribute("style", "width: 300px");
     // how can i use the style in a different file but still use SearchRes value? 
@@ -206,6 +228,7 @@ async function getData(inputVal, plotLen) {
     movie.appendChild(year);
    movie.appendChild(imgCont);
     movie.appendChild(plot);
+    
     console.log('this is movie', movie)
     title.style.textAlign='center'
     title.style.fontSize='2em'
@@ -228,9 +251,77 @@ async function getData(inputVal, plotLen) {
       raiting.style.color='#646cff'
       raiting.style.textAlign='center'
     }
+
+
+
+
+    
+    let notesbtn = document.createElement("button")
+    notesbtn.innerHTML = 'Notes'
+    movie.appendChild(notesbtn)
+
+
+    notesbtn.addEventListener("click", (e) => {
+      let notesDiv = document.createElement("div")
+      let noteInput = document.createElement("textarea")
+      noteInput.setAttribute("rows", "10")
+      noteInput.setAttribute("cols", "30")
+      noteInput.setAttribute("id", "notesval")
+      let addNote = document.createElement("button")
+      addNote.innerText = 'Add A Note.'
+      notesDiv.appendChild(noteInput)
+      notesDiv.appendChild(addNote)
+      notesDiv.setAttribute("id", "notess")
+      addNote.addEventListener("click", (e) => {
+        let inputVal = document.getElementById("notesval").value
+        console.log(inputVal)
+        let noteres = document.createElement("p")
+        let inputvalNode = document.createTextNode(inputVal)
+        noteres.appendChild(inputvalNode)
+        notesDiv.appendChild(noteres)
+        noteres.style.border = "solid black "
+        noteres.setAttribute("note", inputVal)
+      })
+
+
+      movie.appendChild(notesDiv)
+    
+    })
     store.addMovie(store.state, mainCon);
     console.log('endddd store',store)
     
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+    
+
+
+
+
     let favButton = document.createElement("button")
     console.log(favButton)
     favButton.setAttribute("id", "favbtn")
@@ -250,6 +341,11 @@ async function getData(inputVal, plotLen) {
       let favTitle = document.createTextNode(searchRes[i].Title)
         let favYear = document.createTextNode(searchRes[i].Year)
         let favPlot = document.createTextNode(plotData.Plot)
+        let favNote = document.getElementById("notess")
+        let favNoteres = document.createElement("p")
+        favNoteres.appendChild(favNote)
+      
+        console.log(favNoteres)
         
         let favMovieID = document.createTextNode(searchRes[i].imdbID)
         let favPoster = document.createElement('img')
@@ -263,21 +359,29 @@ async function getData(inputVal, plotLen) {
         favMovies.appendChild(favPoster)
         favMovies.appendChild(favMovieID)
         favMovies.appendChild(favPlot)
+        favMovies.appendChild(favNoteres)
         // favMovieContainer.appendChild(favraiting)
         document.body.appendChild(favMovieDisplay)
         console.log(favMovieDisplay)
         let favedMovies = []
         favedMovies.push(favMovies)
         console.log(favedMovies)
-       
-        
-        // let searchResObj = {
-        //   Ttile: `${searchRes[i].Title}`,
-        //   plot: `${searchRes[i].Plot}`,
-        //   comments: `${noteSec}`
-        // }
+      
+        let favMovieObj = {
+          title: `${searchRes[i].Title}`,
+          year: `${searchRes[i].Year}`,
+          Poster: `${searchRes[i].Poster}`,
+          
+          Plot: `${plotData.Plot}`,
+          
+          imdbID: `${searchRes[i].imdbID}`, 
+          notes: `${favNoteres}`
+          
+        }
+        console.log(favNoteres.note)
+      
            
-        favstore.favMovie(favstore.state,searchRes[i]);
+        favstore.favMovie(favstore.state,favMovieObj);
          
     console.log('endddd store',favstore)
     })
@@ -285,33 +389,36 @@ async function getData(inputVal, plotLen) {
 
 
 
-    let notesbtn = document.createElement("button")
-    notesbtn.textContent = "Notes"
-    movie.appendChild(notesbtn)
+    // let notesbtn = document.createElement("button")
+    // notesbtn.textContent = "Notes"
+    // movie.appendChild(notesbtn)
 
-    notesbtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      let noteSec = document.createElement("div")
-      let notes = document.createElement("textarea")
-      let addNote = document.createElement("button")
-      addNote.textContent = "add a Note"
-      notes.setAttribute("cols", "30")
-      notes.setAttribute("rows", "10")
-      notes.setAttribute("id", "usernotes")
-      movie.appendChild(noteSec)
-      noteSec.appendChild(notes)
-      noteSec.appendChild(addNote)
-      addNote.addEventListener("click", (e) => {
-        e.preventDefault(); 
-        let notesres = document.createElement("p")
-        let notesVal = document.getElementById("usernotes").value
-        let notesValNode = document.createTextNode(notesVal)
-        console.log(notesVal)
-        notesres.appendChild(notesValNode)
-        noteSec.appendChild(notesres)
+    // notesbtn.addEventListener("click", (e) => {
+    //   e.preventDefault();
+    //   let noteSec = document.createElement("div")
+    //   let notes = document.createElement("textarea")
+    //   let addNote = document.createElement("button")
+    //   addNote.textContent = "add a Note"
+    //   notes.setAttribute("cols", "30")
+    //   notes.setAttribute("rows", "10")
+    //   notes.setAttribute("id", "usernotes")
+    //   movie.appendChild(noteSec)
+    //   noteSec.appendChild(notes)
+    //   noteSec.appendChild(addNote)
+    //   addNote.addEventListener("click", (e) => {
+    //     e.preventDefault(); 
+    //     let notesres = document.createElement("p")
+    //     let notesVal = document.getElementById("usernotes").value
+    //     let notesValNode = document.createTextNode(notesVal)
+    //     console.log(notesVal)
         
-      })
-    })
+    //     notesres.appendChild(notesValNode)
+    //     noteSec.appendChild(notesres)
+        
+        
+        
+    //   })
+    // })
    
     
     
