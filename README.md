@@ -5,6 +5,7 @@
 
  Using knowledge of forms and APIs, build a website that will look up information about movies and display the information for users.
 
+
 ### What Was Done To Complete The Task: 
 
 - Created local project that uses Vite, Prettier, and ESLint 
