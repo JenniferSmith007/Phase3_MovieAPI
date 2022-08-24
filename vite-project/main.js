@@ -12,16 +12,16 @@ class Store {
     database.then(async (db) => {
       this.db = db;
       const favmovie = await db.get("FavmoviesToStore", "favmovie");
-      const comment = await db.get("comments", "comment")
+      // const comment = await db.get("comments", "comment")
       
       if (favmovie) {
         for (const [key, value] of Object.entries(favmovie)) this.set(key, value);
      
       }
-    if (comment){
-      for (const [key, value] of Object.entries(comment)) this.set(key, value);
-      console.log('this is comment',comment)
-    }
+    // if (comment){
+    //   for (const [key, value] of Object.entries(comment)) this.set(key, value);
+    //   console.log('this is comment',comment)
+    // }
     
     });
     this.state = new Proxy(init, {
@@ -40,8 +40,8 @@ class Store {
           value[value.length - 1] )
           console.log(value[value.length - 1])
 
-           await self.db.add( "comments", noteOBJ,"imdbID" )
-            console.log("comments ----->", noteOBJ )
+          //  await self.db.add( "comments", noteOBJ,"imdbID" )
+          //   console.log("comments ----->", noteOBJ )
  
        
        
@@ -362,8 +362,8 @@ async function getData(inputVal, plotLen) {
       let favTitle = document.createTextNode(searchRes[i].Title)
         let favYear = document.createTextNode(searchRes[i].Year)
         let favPlot = document.createTextNode(plotData.Plot)
-        let favinputVal = document.getElementById("notesval").value
-        console.log(favinputVal)
+        // let favinputVal = document.getElementById("notesval").value
+        // console.log(favinputVal)
         // let favNoteres = document.createElement("p")
        
         // favNoteres.appendChild(favinputVal)
@@ -405,7 +405,7 @@ async function getData(inputVal, plotLen) {
           Plot: `${plotData.Plot}`,
           
           imdbID: `${searchRes[i].imdbID}`, 
-          notes: `${favinputVal}`
+          // notes: `${favinputVal}`
           
         }
         console.log(favMovieObj)
