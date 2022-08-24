@@ -12,12 +12,16 @@ class Store {
     database.then(async (db) => {
       this.db = db;
       const favmovie = await db.get("FavmoviesToStore", "favmovie");
-
+      const comment = await db.get("comments", "comment")
       
       if (favmovie) {
         for (const [key, value] of Object.entries(favmovie)) this.set(key, value);
+     
       }
-    
+    if (comment){
+      for (const [key, value] of Object.entries(comment)) this.set(key, value);
+      console.log('this is comment',comment)
+    }
     
     });
     this.state = new Proxy(init, {
@@ -35,9 +39,10 @@ class Store {
           await self.db.add("FavmoviesToStore", 
           value[value.length - 1] )
           console.log(value[value.length - 1])
-         
-  
 
+           await self.db.add( "comments", noteOBJ,"imdbID" )
+            console.log("comments ----->", noteOBJ )
+ 
        
        
           
@@ -67,6 +72,8 @@ class Store {
     this.state = Object.assign(this.state, state);
 
     console.log(this.state);
+
+    
   }
 
   getAllMovies() {
@@ -103,8 +110,10 @@ const favstore = new Store({ favmovies: [] } );
 
 
 
+
 console.log(store)
 console.log(favstore)
+
 
 
 
@@ -140,11 +149,11 @@ class Movies extends HTMLElement {
     this.title = "";
     this.year = "";
     this.plot = "";
-    this.note = "";
+    this.comment = "";
     // do I pass in poster and id for the constructor? 
   }
   static get observedAttributes() {
-    return ["title", "year", "plot", "note"];
+    return ["title", "year", "plot", "comment"];
     // same as above? 
   }
   attributeChangedCallback(attributeName, oldValue, newValue) {
@@ -273,14 +282,25 @@ async function getData(inputVal, plotLen) {
       notesDiv.appendChild(addNote)
       notesDiv.setAttribute("id", "notess")
       addNote.addEventListener("click", (e) => {
+        e.preventDefault()
         let inputVal = document.getElementById("notesval").value
         console.log(inputVal)
         let noteres = document.createElement("p")
         let inputvalNode = document.createTextNode(inputVal)
+        let noteOBJ = {
+          imdbID: `${searchRes[i].imdbID}`, 
+          notes: `${inputVal}`
+        }
+        console.log(noteOBJ)
+      
+      
         noteres.appendChild(inputvalNode)
         notesDiv.appendChild(noteres)
         noteres.style.border = "solid black "
         noteres.setAttribute("note", inputVal)
+         
+        store.addMovie(store.state, mainCon.noteOBJ);
+        console.log('this is notdv--',store)
       })
 
 
@@ -288,6 +308,7 @@ async function getData(inputVal, plotLen) {
     
     })
     store.addMovie(store.state, mainCon);
+  
     console.log('endddd store',store)
     
     
@@ -341,11 +362,13 @@ async function getData(inputVal, plotLen) {
       let favTitle = document.createTextNode(searchRes[i].Title)
         let favYear = document.createTextNode(searchRes[i].Year)
         let favPlot = document.createTextNode(plotData.Plot)
-        let favNote = document.getElementById("notess")
-        let favNoteres = document.createElement("p")
-        favNoteres.appendChild(favNote)
+        let favinputVal = document.getElementById("notesval").value
+        console.log(favinputVal)
+        // let favNoteres = document.createElement("p")
+       
+        // favNoteres.appendChild(favinputVal)
       
-        console.log(favNoteres)
+        
         
         let favMovieID = document.createTextNode(searchRes[i].imdbID)
         let favPoster = document.createElement('img')
@@ -359,13 +382,20 @@ async function getData(inputVal, plotLen) {
         favMovies.appendChild(favPoster)
         favMovies.appendChild(favMovieID)
         favMovies.appendChild(favPlot)
-        favMovies.appendChild(favNoteres)
+        // favMovies.appendChild(favNoteres)
         // favMovieContainer.appendChild(favraiting)
         document.body.appendChild(favMovieDisplay)
         console.log(favMovieDisplay)
-        let favedMovies = []
-        favedMovies.push(favMovies)
-        console.log(favedMovies)
+        let favoredMoives = []
+        favoredMoives.push(favMovies)
+        favoredMoives.forEach(favmovie => {
+          let favedMovies = []
+          favedMovies.push(favmovie)
+          console.log(favedMovies)
+        })
+        
+        // favedMovies.push(favMovies)
+        // console.log(favedMovies)
       
         let favMovieObj = {
           title: `${searchRes[i].Title}`,
@@ -375,10 +405,11 @@ async function getData(inputVal, plotLen) {
           Plot: `${plotData.Plot}`,
           
           imdbID: `${searchRes[i].imdbID}`, 
-          notes: `${favNoteres}`
+          notes: `${favinputVal}`
           
         }
-        console.log(favNoteres.note)
+        console.log(favMovieObj)
+        console.log(favMovieObj.imdbID)
       
            
         favstore.favMovie(favstore.state,favMovieObj);
@@ -389,36 +420,7 @@ async function getData(inputVal, plotLen) {
 
 
 
-    // let notesbtn = document.createElement("button")
-    // notesbtn.textContent = "Notes"
-    // movie.appendChild(notesbtn)
-
-    // notesbtn.addEventListener("click", (e) => {
-    //   e.preventDefault();
-    //   let noteSec = document.createElement("div")
-    //   let notes = document.createElement("textarea")
-    //   let addNote = document.createElement("button")
-    //   addNote.textContent = "add a Note"
-    //   notes.setAttribute("cols", "30")
-    //   notes.setAttribute("rows", "10")
-    //   notes.setAttribute("id", "usernotes")
-    //   movie.appendChild(noteSec)
-    //   noteSec.appendChild(notes)
-    //   noteSec.appendChild(addNote)
-    //   addNote.addEventListener("click", (e) => {
-    //     e.preventDefault(); 
-    //     let notesres = document.createElement("p")
-    //     let notesVal = document.getElementById("usernotes").value
-    //     let notesValNode = document.createTextNode(notesVal)
-    //     console.log(notesVal)
-        
-    //     notesres.appendChild(notesValNode)
-    //     noteSec.appendChild(notesres)
-        
-        
-        
-    //   })
-    // })
+   
    
     
     
