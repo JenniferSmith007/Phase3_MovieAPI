@@ -12,16 +12,16 @@ class Store {
     database.then(async (db) => {
       this.db = db;
       const favmovie = await db.get("FavmoviesToStore", "favmovie");
-      const comment = await db.get("comments", "comment")
+      // const comment = await db.get("comments", "comment")
       
       if (favmovie) {
         for (const [key, value] of Object.entries(favmovie)) this.set(key, value);
      
       }
-    if (comment){
-      for (const [key, value] of Object.entries(comment)) this.set(key, value);
-      console.log('this is comment',comment)
-    }
+    // if (comment){
+    //   for (const [key, value] of Object.entries(comment)) this.set(key, value);
+    //   console.log('this is comment',comment)
+    // }
     
     });
     this.state = new Proxy(init, {
@@ -40,7 +40,9 @@ class Store {
           value[value.length - 1] )
           console.log(value[value.length - 1])
 
-       
+          // await self.db.add("comments", 
+          // value[value.length - 1] )
+          // console.log(value[value.length - 1])
  
        
        
@@ -263,7 +265,25 @@ async function getData(inputVal, plotLen) {
 
 
 
-    
+    const addComments = (comments) => {
+      const transaction = db.transaction("comments", "readwrite")
+      transaction.oncomplete = function(e) {
+        console.log("all comments added")
+      }
+      transaction.onerror = function(e){
+        console.log('error adding comments ')
+      }
+      const objectStore = transaction.objectStore("comments")
+      for (comment of comments){
+        const request = objectStore.add(comment)
+        request.onsuccess = () => {
+          console.log(`new comment added ${request.result}`)
+        }
+        request.onsuccess = (err) => {
+          console.log('errror addding comments ')
+        }
+      }
+    }
     let notesbtn = document.createElement("button")
     notesbtn.innerHTML = 'Notes'
     movie.appendChild(notesbtn)
@@ -286,30 +306,34 @@ async function getData(inputVal, plotLen) {
         console.log(inputVal)
         let noteres = document.createElement("p")
         let inputvalNode = document.createTextNode(inputVal)
-        let noteOBJ = {
+        let comments = {
           imdbID: `${searchRes[i].imdbID}`, 
           notes: `${inputVal}`
         }
-        console.log(noteOBJ)
+        console.log(comments)
       
       
         noteres.appendChild(inputvalNode)
         notesDiv.appendChild(noteres)
         noteres.style.border = "solid black "
         noteres.setAttribute("note", inputVal)
-        self.db.put( "comments", noteOBJ, )
-        console.log("comments ----->", noteOBJ )
-        store.addMovie(store.state, mainCon.noteOBJ);
+        
+        // console.log("comments ----->", noteOBJ )
+       
           
         console.log('this is notdv--',store)
+        
+        
+        addComments(comments)
+        console.log('this is comments--',comments)
       })
 
-
+      
       movie.appendChild(notesDiv)
     
     })
     store.addMovie(store.state, mainCon);
-  
+    
     console.log('endddd store',store)
     
     
