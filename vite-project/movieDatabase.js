@@ -7,7 +7,7 @@ export const database =  openDB('MovieStore', 2, {
      
   
      db.createObjectStore('FavmoviesToStore', {keyPath:"imdbID"})
-    //  db.createObjectStore('comments', {keyPath:"imdbID"})
+     db.createObjectStore('comments', {keyPath:"imdbID"})
 
      
     
