@@ -13,11 +13,12 @@ class Store {
       this.db = db;
       const favmovie = await db.get("FavmoviesToStore", "favmovie");
       // const comment = await db.get("comments", "comment")
-      
+      console.log('this is favmovieeee', favmovie)
       if (favmovie) {
         for (const [key, value] of Object.entries(favmovie)) this.set(key, value);
      
       }
+      console.log('this is favmovieeee', favmovie)
     // if (comment){
     //   for (const [key, value] of Object.entries(comment)) this.set(key, value);
     //   console.log('this is comment',comment)
