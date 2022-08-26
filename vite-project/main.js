@@ -11,19 +11,7 @@ class Store {
     this.subscribers = [];
     database.then(async (db) => {
       this.db = db;
-      // const favmovie = await db.get("FavmoviesToStore", "favmovie");
-      // get method db mehtod to read the value in fav movies 
-      // const comment = await db.get("comments", "comment")
-      
-      // if (favmovie) {
-      //   for (const [key, value] of Object.entries(favmovie)) this.set(key, value);
-     
-      // }
-    // if (comment){
-    //   for (const [key, value] of Object.entries(comment)) this.set(key, value);
-    //   console.log('this is comment',comment)
-    // }
-    
+      console.log(this.db)
     });
     this.state = new Proxy(init, {
       async set(state, key, value) {
@@ -33,18 +21,21 @@ class Store {
         if (self.db) {
           console.log(self.db);
 
-         
+         key = {"comments":'', "favorites": []}
        
-          
+          console.log(db.key)
           
           // check to see what the key is with a conditional  , only time to add to db is if key favorites is true if key === 'Favorites" 
-          await self.db.add("FavmoviesToStore", 
-          value[value.length - 1] )
-          console.log(value[value.length - 1])
+          if (key === "favorites"){
+            await self.db.add("FavmoviesToStore", 
+            value[value.length - 1] )
+            console.log(value[value.length - 1])
+          }
+          
 
           
  
-          // 
+          
        
        
           
@@ -63,47 +54,36 @@ class Store {
     this.subscribers.push(cb);
   }
 
-  addMovie(state, value) {
-    state.movies.push(value);
+  addState(state, value) {
+
+
+
+   state.key.push(value)
+
+
+ 
     
 
-    console.log(value);
-    
-   
-
-    this.state = Object.assign(this.state, state);
-
-    console.log(this.state);
-
-    
-  }
-
-  getAllMovies() {
-    
-      
-
-    return this.state.movies
-  }
-
-  favMovie(state, value) {
-    state.favorites.push(value);
-    
-
-    console.log(value);
+    console.log(state.key);
     
    
 
     this.state = Object.assign(this.state, state);
 
     console.log(this.state);
+
+    
   }
 
-  getAllFavMovies() {
+  getAllState() {
     
       
-
-    return this.state.favorites
+   
+    return this.state.key
+  
   }
+
+
 //  can combine into 1 set and get method 
 // another similar set and get for key and search 
 // set key  this.state(key,value){
@@ -118,17 +98,17 @@ const store = new Store({ search: '', key: '', favorites: [], movies: [] } );
 // const favstore = new Store({ favmovies: [] } );
 
 
-
-
 console.log(store)
 
+console.log(store.state.favorites)
 
 
 
 
 
 
-console.log(store.state.movies);
+
+console.log(store.state.search);
 // console.log(favstore.state.favmovies);
 
 
@@ -147,7 +127,16 @@ store.subscribe((state) => {
   let favmovieState = state.favorites;
   console.log('this si movie state', favmovieState)
   favmovieState.forEach((subFavMovies) => document.body.appendChild(subFavMovies));
- 
+  console.log('this si movie state', subFavMovies)
+
+
+});
+store.subscribe((state) => {
+  console.log(state);
+  let searchState = state.search;
+  console.log('this sisearch state', searchState)
+  searchState.forEach((subsearchMovies) => document.body.appendChild(subsearchMovies));
+  console.log('this si movie state', subsearchMovies)
 
 
 });
@@ -332,7 +321,7 @@ async function getData(inputVal, plotLen) {
       movie.appendChild(notesDiv)
     
     })
-    store.addMovie(store.state, mainCon);
+    store.addState(store.state, mainCon);
     
     console.log('endddd store',store)
     
@@ -436,9 +425,9 @@ async function getData(inputVal, plotLen) {
         console.log(favMovieObj)
         console.log(favMovieObj.imdbID)
       
-           
-       store.favMovie(store.state,favMovieObj);
-         
+        
+       store.addState(store.state,favMovieObj);
+       console.log('endddd store',favMovieObj) 
     console.log('endddd store',store)
     })
 
@@ -461,6 +450,7 @@ button.addEventListener("click", function (e) {
   e.preventDefault();
   const inputVal = document.getElementById("movie_search").value;
 
+  
   const plot = document.querySelector(
     "input[type=radio][name=plot_length]:checked"
   );
