@@ -11,13 +11,14 @@ class Store {
     this.subscribers = [];
     database.then(async (db) => {
       this.db = db;
-      const favmovie = await db.get("FavmoviesToStore", "favmovie");
+      // const favmovie = await db.get("FavmoviesToStore", "favmovie");
+      // get method db mehtod to read the value in fav movies 
       // const comment = await db.get("comments", "comment")
       
-      if (favmovie) {
-        for (const [key, value] of Object.entries(favmovie)) this.set(key, value);
+      // if (favmovie) {
+      //   for (const [key, value] of Object.entries(favmovie)) this.set(key, value);
      
-      }
+      // }
     // if (comment){
     //   for (const [key, value] of Object.entries(comment)) this.set(key, value);
     //   console.log('this is comment',comment)
@@ -27,7 +28,8 @@ class Store {
     this.state = new Proxy(init, {
       async set(state, key, value) {
         state[key] = value;
-     
+
+    //  key = legit string "search", "movies"
         if (self.db) {
           console.log(self.db);
 
@@ -35,15 +37,14 @@ class Store {
        
           
           
-          
+          // check to see what the key is with a conditional  , only time to add to db is if key favorites is true if key === 'Favorites" 
           await self.db.add("FavmoviesToStore", 
           value[value.length - 1] )
           console.log(value[value.length - 1])
 
-          // await self.db.add("comments", 
-          // value[value.length - 1] )
-          // console.log(value[value.length - 1])
+          
  
+          // 
        
        
           
@@ -63,11 +64,11 @@ class Store {
   }
 
   addMovie(state, value) {
-    let newState = state.movies.push(value);
+    state.movies.push(value);
     
 
     console.log(value);
-    console.log(newState);
+    
    
 
     this.state = Object.assign(this.state, state);
@@ -85,11 +86,11 @@ class Store {
   }
 
   favMovie(state, value) {
-    let favState = state.favmovies.push(value);
+    state.favorites.push(value);
     
 
     console.log(value);
-    console.log(favState);
+    
    
 
     this.state = Object.assign(this.state, state);
@@ -101,19 +102,26 @@ class Store {
     
       
 
-    return this.state.favmovies
+    return this.state.favorites
   }
- 
+//  can combine into 1 set and get method 
+// another similar set and get for key and search 
+// set key  this.state(key,value){
+  // this.state[key] =value 
+
+// }
+// get key 
   
 }
-const store = new Store({ movies: [] } );
-const favstore = new Store({ favmovies: [] } );
+const store = new Store({ search: '', key: '', favorites: [], movies: [] } );
+        // this.state = {"api" "search"}
+// const favstore = new Store({ favmovies: [] } );
 
 
 
 
 console.log(store)
-console.log(favstore)
+
 
 
 
@@ -121,7 +129,7 @@ console.log(favstore)
 
 
 console.log(store.state.movies);
-console.log(favstore.state.favmovies);
+// console.log(favstore.state.favmovies);
 
 
 store.subscribe((state) => {
@@ -134,9 +142,9 @@ store.subscribe((state) => {
 
 });
 
-favstore.subscribe((state) => {
+store.subscribe((state) => {
   console.log(state);
-  let favmovieState = state.favmovies;
+  let favmovieState = state.favorites;
   console.log('this si movie state', favmovieState)
   favmovieState.forEach((subFavMovies) => document.body.appendChild(subFavMovies));
  
@@ -181,7 +189,7 @@ async function getData(inputVal, plotLen) {
 
   for (let i = 0; i < searchRes.length; i++) {
     console.log(`this is data: ${searchRes[i].Title}`);
-
+  // store.set("search" ,  ${searchRes[i].Title})
     const plotUrl = `https://www.omdbapi.com/?t=${searchRes[i].Title}&plot=${plotLen}&apikey=${apiKey}`;
     console.log(`this is your plotURl ${plotUrl}`);
     const plotResp = await fetch(`${plotUrl}`);
@@ -265,31 +273,14 @@ async function getData(inputVal, plotLen) {
 
 
 
-    const addComments = (comments) => {
-      const transaction = db.transaction("comments", "readwrite")
-      transaction.oncomplete = function(e) {
-        console.log("all comments added")
-      }
-      transaction.onerror = function(e){
-        console.log('error adding comments ')
-      }
-      const objectStore = transaction.objectStore("comments")
-      for (comment of comments){
-        const request = objectStore.add(comment)
-        request.onsuccess = () => {
-          console.log(`new comment added ${request.result}`)
-        }
-        request.onsuccess = (err) => {
-          console.log('errror addding comments ')
-        }
-      }
-    }
+    
     let notesbtn = document.createElement("button")
     notesbtn.innerHTML = 'Notes'
     movie.appendChild(notesbtn)
 
 
     notesbtn.addEventListener("click", (e) => {
+      // async callback 
       let notesDiv = document.createElement("div")
       let noteInput = document.createElement("textarea")
       noteInput.setAttribute("rows", "10")
@@ -324,11 +315,20 @@ async function getData(inputVal, plotLen) {
         console.log('this is notdv--',store)
         
         
-        addComments(comments)
+      //  // await self.db.add("comments", 
+          // value[value.length - 1] )
+          // console.log(value[value.length - 1])
+
+
+          // create view and hide notes to add listeners to show or hide comments 
+
+          
+
+
         console.log('this is comments--',comments)
       })
 
-      
+   
       movie.appendChild(notesDiv)
     
     })
@@ -411,13 +411,13 @@ async function getData(inputVal, plotLen) {
         // favMovieContainer.appendChild(favraiting)
         document.body.appendChild(favMovieDisplay)
         console.log(favMovieDisplay)
-        let favoredMoives = []
-        favoredMoives.push(favMovies)
-        favoredMoives.forEach(favmovie => {
-          let favedMovies = []
-          favedMovies.push(favmovie)
-          console.log(favedMovies)
-        })
+        // let favoredMoives = []
+        // favoredMoives.push(favMovies)
+        // favoredMoives.forEach(favmovie => {
+        //   let favedMovies = []
+        //   favedMovies.push(favmovie)
+        //   console.log(favedMovies)
+        // })
         
         // favedMovies.push(favMovies)
         // console.log(favedMovies)
@@ -437,9 +437,9 @@ async function getData(inputVal, plotLen) {
         console.log(favMovieObj.imdbID)
       
            
-        favstore.favMovie(favstore.state,favMovieObj);
+       store.favMovie(store.state,favMovieObj);
          
-    console.log('endddd store',favstore)
+    console.log('endddd store',store)
     })
 
 
