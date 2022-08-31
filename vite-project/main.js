@@ -12,6 +12,18 @@ class Store {
     database.then(async (db) => {
       this.db = db;
       console.log(this.db)
+      const favorites = await db.get("FavmoviesToStore", "favorites");
+      const comments = await db.get("comments", "comments");
+      if (favorites) {
+        console.log(favorites)
+        for (const [key, value] of Object.entries(favorites)) this.set(key, value);
+     
+      }
+      if (comments) {
+        console.log(comments)
+        for (const [key, value] of Object.entries(comments)) this.set(key, value);
+     
+      }
     });
     this.state = new Proxy(init, {
       async set(state, key, value) {
@@ -21,21 +33,30 @@ class Store {
         if (self.db) {
           console.log(self.db);
 
-         key = {"comments":'', "favorites": []}
+        //  key =["comments", "favorites"]
        
-          console.log(db.key)
-          
+          // console.log(db.key)
+          // console.log(state[key])
           // check to see what the key is with a conditional  , only time to add to db is if key favorites is true if key === 'Favorites" 
-          if (key === "favorites"){
-            await self.db.add("FavmoviesToStore", 
-            value[value.length - 1] )
-            console.log(value[value.length - 1])
-          }
+           
+              
+              // await self.db.add("FavmoviesToStore", 
+              // value[value.length - 1] )
+              // console.log(value[value.length - 1])
+          
+            
+            // if (key === "comments"){
+            //   console.log(key)
+            //   await self.db.add("comments", 
+            //   value[value.length - 1] )
+            //   console.log(value[value.length - 1])
+            // }
           
 
           
- 
           
+          
+
        
        
           
@@ -54,34 +75,89 @@ class Store {
     this.subscribers.push(cb);
   }
 
-  addState(state, value) {
+  addMovieState(state, value) {
 
 
 
-   state.key.push(value)
+  state.movies.push(value)
 
-
+   
  
     
 
-    console.log(state.key);
+    
+   
     
    
 
     this.state = Object.assign(this.state, state);
 
     console.log(this.state);
+}
+addFavoriteState(state, value) {
 
-    
-  }
 
-  getAllState() {
+
+  state.favorites.push(value)
+
+  
+
+   
+
+   
+  
+   
+  
+
+   this.state = Object.assign(this.state, state);
+
+   console.log(this.state);
+}
+addSearchState(state, value) {
+
+
+  state.search.push(value)
+  // state.search.concat(value)
+console.log(state.search)
+  console.log(value)
+
+   
+
+   
+  
+   
+  
+
+   this.state = Object.assign(this.state, state);
+
+   console.log(this.state);
+}
+
+
+  getMovieState() {
     
       
    
-    return this.state.key
+    return this.state.movies
   
   }
+
+  getFavoriteState() {
+    
+      
+   
+    return this.state.favorites
+  
+  }
+
+  getSearchState() {
+    
+      
+   
+    return this.state.search
+  
+  }
+
 
 
 //  can combine into 1 set and get method 
@@ -93,14 +169,16 @@ class Store {
 // get key 
   
 }
-const store = new Store({ search: '', key: '', favorites: [], movies: [] } );
+const store = new Store({ search: [], key: '', favorites: [], movies: [] } );
         // this.state = {"api" "search"}
 // const favstore = new Store({ favmovies: [] } );
 
 
-console.log(store)
 
+console.log(store.state.search)
 console.log(store.state.favorites)
+console.log(store.state.movies)
+console.log(store.state.comments)
 
 
 
@@ -108,7 +186,7 @@ console.log(store.state.favorites)
 
 
 
-console.log(store.state.search);
+
 // console.log(favstore.state.favmovies);
 
 
@@ -147,11 +225,11 @@ class Movies extends HTMLElement {
     this.title = "";
     this.year = "";
     this.plot = "";
-    this.comment = "";
+    
     // do I pass in poster and id for the constructor? 
   }
   static get observedAttributes() {
-    return ["title", "year", "plot", "comment"];
+    return ["title", "year", "plot"];
     // same as above? 
   }
   attributeChangedCallback(attributeName, oldValue, newValue) {
@@ -174,7 +252,7 @@ async function getData(inputVal, plotLen) {
   let searchRes = data.Search;
   console.log(searchRes);
   console.log(`this is your pltLen: ${plotLen}`);
-
+  store.addSearchState(store.state, inputVal);
 
   for (let i = 0; i < searchRes.length; i++) {
     console.log(`this is data: ${searchRes[i].Title}`);
@@ -186,7 +264,7 @@ async function getData(inputVal, plotLen) {
     console.log(plotData.Plot);
     console.log(plotData.Ratings);
 
-
+   
  
     // console.log(Search.Title)
     let mainCon = document.getElementById("movie");
@@ -280,6 +358,7 @@ async function getData(inputVal, plotLen) {
       notesDiv.appendChild(noteInput)
       notesDiv.appendChild(addNote)
       notesDiv.setAttribute("id", "notess")
+      
       addNote.addEventListener("click", (e) => {
         e.preventDefault()
         let inputVal = document.getElementById("notesval").value
@@ -291,8 +370,31 @@ async function getData(inputVal, plotLen) {
           notes: `${inputVal}`
         }
         console.log(comments)
-      
-      
+       store.db.add("comments", comments)
+       let seeNotes = document.createElement('button')
+       noteres.appendChild(seeNotes)
+          seeNotes.innerText = 'see notes'
+
+       seeNotes.addEventListener("click", async() => {
+        let resp = document.createElement("p")
+        noteres.appendChild(resp)
+        let req = store.db.getAll("comments")
+        let reqAns = document.createTextNode(req)
+        console.log(req)
+         
+       
+        resp.appendChild(reqAns)
+
+   
+       })
+     
+       
+        
+       
+    
+      // let allcom = document.createTextNode(req)
+      // notesDiv.innerText = `this is result ${allcom}`
+      // // allcom.innerText = `this is res ${allcom}`
         noteres.appendChild(inputvalNode)
         notesDiv.appendChild(noteres)
         noteres.style.border = "solid black "
@@ -304,9 +406,7 @@ async function getData(inputVal, plotLen) {
         console.log('this is notdv--',store)
         
         
-      //  // await self.db.add("comments", 
-          // value[value.length - 1] )
-          // console.log(value[value.length - 1])
+   
 
 
           // create view and hide notes to add listeners to show or hide comments 
@@ -321,7 +421,9 @@ async function getData(inputVal, plotLen) {
       movie.appendChild(notesDiv)
     
     })
-    store.addState(store.state, mainCon);
+   
+    store.addMovieState(store.state, mainCon);
+   
     
     console.log('endddd store',store)
     
@@ -426,7 +528,13 @@ async function getData(inputVal, plotLen) {
         console.log(favMovieObj.imdbID)
       
         
-       store.addState(store.state,favMovieObj);
+       store.addFavoriteState(store.state,favMovieObj);
+       store.db.add("FavmoviesToStore", favMovieObj)
+   
+       
+       let favdiv = document.createElement('p')
+       document.body.appendChild(favdiv)
+
        console.log('endddd store',favMovieObj) 
     console.log('endddd store',store)
     })
