@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "serve": "vite --port 8000"
+    "serve": "vite --port 8000",
+    "test": "prettier -c .",
+    "fix": "prettier --write ."
   },
   "devDependencies": {
     "eslint": "^8.20.0",
@@ -16,6 +18,8 @@
   },
   "dependencies": {
     "axios": "^0.27.2",
+    "ci": "^2.2.0",
     "idb": "^7.0.2"
+    
   }
 }
