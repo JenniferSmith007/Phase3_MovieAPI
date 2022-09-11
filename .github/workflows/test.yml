@@ -9,9 +9,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3 # Check out our code
 
-      - name: action-yarn
-        uses: comchangs/action-yarn@v0.1-beta
+      - name: Use Node.js 16 # Use Node 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'npm'
 
-      - run: yarn ci # Install our node modules
-      - run: yarn test # Run our test script
-      - run: yarn run build # Run our build script
+      - run: npm ci # Install our node modules
+      - run: npm test # Run our test script
+      - run: npm run build # Run our build script
