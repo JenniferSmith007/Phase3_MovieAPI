@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3 # Check out our code
-
-      - name: Use Node.js 16 # Use Node 16
-        uses: actions/setup-node@v3
+        
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.4.1
         with:
           node-version: 16.x
           cache: 'npm'
