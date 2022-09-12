@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&family=Koulen&display=swap" rel="stylesheet">
     <title>Movie App</title>
@@ -24,9 +24,14 @@
         <input required minlength="2" type="radio" id="short" name="plot_length" value="short" />
         <label for="short">Short Plot</label><br />
       </form>
-      <div id="movie"></div>
-
       <button type="button" id="button">Click here</button>
+      <movie-component id="movie">
+        <!-- <a href="favorite.html">
+          <button>favorite</button>
+        </a> -->
+      </movie-component>
+
+      
     </div>
 
     <script type="module" src="/main.js"></script>
