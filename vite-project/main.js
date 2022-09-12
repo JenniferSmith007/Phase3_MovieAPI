@@ -1,5 +1,5 @@
 import "./style.css";
-const apiKey = import.meta.env.VITE_API_KEY;
+// const apiKey = import.meta.env.VITE_API_KEY;
 import { database } from "./movieDatabase";
 
 
@@ -169,6 +169,7 @@ class Movies extends HTMLElement {
 window.customElements.define("movie-component", Movies);
 
 async function getData(inputVal, plotLen) {
+  let apiKey = '896bcbd1'
  
   const resp = await fetch(
     `https://www.omdbapi.com/?s=${inputVal}&plot=short&apikey=${apiKey}`
